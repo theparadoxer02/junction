@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from django import forms
 
 # Standard Library
 import collections
@@ -7,13 +8,14 @@ import collections
 # Third Party Stuff
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_http_methods
 from hashids import Hashids
+from datetime import date, datetime, timedelta
 
 # Junction Stuff
 from junction.base.constants import ConferenceSettingConstants, ConferenceStatus, ProposalReviewStatus, ProposalStatus
@@ -240,7 +242,8 @@ def update_proposal(request, conference_slug, slug):
                        'errors': form.errors})
 
     # Valid Form
-    proposal.title = form.cleaned_data['title']
+    if not conference.end_date < datetime.now().date():
+        proposal.title = form.cleaned_data['title']
     proposal.description = form.cleaned_data['description']
     proposal.target_audience = form.cleaned_data['target_audience']
     proposal.prerequisites = form.cleaned_data['prerequisites']

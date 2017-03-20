@@ -6,6 +6,8 @@ from django import forms
 from django.utils.safestring import mark_safe
 from django.utils.timezone import now
 from pagedown.widgets import PagedownWidget
+from datetime import date, datetime, timedelta
+
 
 # Junction Stuff
 from junction.base.constants import (
@@ -107,12 +109,24 @@ class ProposalForm(forms.Form):
         widget=PagedownWidget(show_preview=True), required=False,
         help_text="Links to your previous work like Blog, Open Source Contributions etc ...")
 
+
     def __init__(self, conference, action="edit", *args, **kwargs):
+        if conference.end_date < datetime.now().date():
+            print "ho rho bhai"
+            raise forms.ValidationError("You have forgotten about Fred!")
+            #raise forms.ValidationError(_("This email address is already in use. Please supply a different email address."))
         super(ProposalForm, self).__init__(*args, **kwargs)
         self.fields['proposal_section'].choices = _get_proposal_section_choices(
             conference, action=action)
         self.fields['proposal_type'].choices = _get_proposal_type_choices(
             conference, action=action)
+
+    def clean(self):
+        '''Required custom validation for the form.'''
+        super(forms.Form,self).clean()
+        if val == False:
+            self._errors['title'] = [u'Passwords must match.']
+        return self.cleaned_data
 
     @classmethod
     def populate_form_for_update(self, proposal):
