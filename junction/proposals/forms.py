@@ -112,7 +112,7 @@ class ProposalForm(forms.Form):
 
     def __init__(self, conference, action="edit", *args, **kwargs):
         if conference.end_date < datetime.now().date():
-            print "ho rho bhai"
+            print "This is getting pring have to raise validation error Here"
             raise forms.ValidationError("You have forgotten about Fred!")
             #raise forms.ValidationError(_("This email address is already in use. Please supply a different email address."))
         super(ProposalForm, self).__init__(*args, **kwargs)
