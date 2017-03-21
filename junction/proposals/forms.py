@@ -21,8 +21,6 @@ from junction.base.constants import (
 from junction.proposals.models import ProposalSection, ProposalSectionReviewerVoteValue, ProposalType
 
 
-val = True
-
 def _get_proposal_section_choices(conference, action="edit"):
     if action == "create":
         return [(str(cps.id), cps.name)
@@ -113,22 +111,14 @@ class ProposalForm(forms.Form):
 
 
     def __init__(self, conference, action="edit", *args, **kwargs):
-        if conference.end_date < datetime.now().date():
-            val = False
-            print("This is getting pring have to raise validation error Here")
-            #raise forms.ValidationError("You have forgotten about Fred!")
         super(ProposalForm, self).__init__(*args, **kwargs)
         self.fields['proposal_section'].choices = _get_proposal_section_choices(
             conference, action=action)
         self.fields['proposal_type'].choices = _get_proposal_type_choices(
             conference, action=action)
-
-    def clean(self):
-        '''Required custom validation for the form.'''
-        super(forms.Form,self).clean()
-        if val == False:
-            self._errors['title'] = [u'You can not chage the title']
-        return self.cleaned_data
+        if conference.end_date < datetime.now().date():
+            print("This is getting pring have to raise validation error Here")
+            raise forms.ValidationError("You have forgotten about Fred!")
 
     @classmethod
     def populate_form_for_update(self, proposal):
