@@ -8,7 +8,6 @@ from django.utils.timezone import now
 from pagedown.widgets import PagedownWidget
 from datetime import date, datetime, timedelta
 
-
 # Junction Stuff
 from junction.base.constants import (
     ConferenceSettingConstants,
@@ -108,7 +107,6 @@ class ProposalForm(forms.Form):
     speaker_links = forms.CharField(
         widget=PagedownWidget(show_preview=True), required=False,
         help_text="Links to your previous work like Blog, Open Source Contributions etc ...")
-
 
     def __init__(self, conference, action="edit", *args, **kwargs):
         super(ProposalForm, self).__init__(*args, **kwargs)
