@@ -244,6 +244,9 @@ def update_proposal(request, conference_slug, slug):
     # Valid Form
     if not conference.end_date < datetime.now().date():
         proposal.title = form.cleaned_data['title']
+    else:
+        from django import forms
+        raise forms.ValidationError("Invalid Code")
     proposal.description = form.cleaned_data['description']
     proposal.target_audience = form.cleaned_data['target_audience']
     proposal.prerequisites = form.cleaned_data['prerequisites']
